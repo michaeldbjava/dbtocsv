@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dbtocvs>
+	
+	<database>
+		<!-- dbtypes: mysql, (future release ... mssql, postgrsql ) datbase: select 
+			database of database server port: port number of database server user: user 
+			of database password: password for user of database -->
+		<dbtype>mysql</dbtype>
+		<database_name>uebungsdatenbank</database_name>
+		<host>localhost</host>
+		<port>3306</port>
+		<user>root</user>
+
+		<password>montag</password>
+	</database>
+	<!-- Tabel to map -->
+	<sql-query>select * from mitarbeiter</sql-query>
+	
+	<csv-file-to-export>FiBu-Profin-Bewegungsdaten.csv</csv-file-to-export>
+	<delimeter>;</delimeter>	
+	
+	
+	
+
+	
+
+</dbtocvs>
