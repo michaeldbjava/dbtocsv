@@ -18,7 +18,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-
 /**
  * @author michael
  *
@@ -113,34 +112,25 @@ public class ConfigurationDBToCvs {
 	public void setDelimeter(char delimeter) {
 		this.delimeter = delimeter;
 	}
-	
-	
+
 	public boolean readConfigFile(String pathXMLConfigFile) {
 		try {
 			File xmlFile = new File(pathXMLConfigFile);
-			
+
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(xmlFile);
-			
-			
-			
-			
 
-			
-			this.setCsvfile(getValueOfXMLNode(document,"csv-file-to-export"));
-			this.setDelimeter(getValueOfXMLNode(document,"delimeter").charAt(0));
-			this.setDbtype(getValueOfXMLNode(document,"dbtype"));
-			this.setLocalhost(getValueOfXMLNode(document,"host"));
-			this.setDatabase(getValueOfXMLNode(document,"database_name"));
-			this.setUser(getValueOfXMLNode(document,"user"));
-			this.setPassword(getValueOfXMLNode(document,"password"));
-			this.setPort(getValueOfXMLNode(document,"port"));
-			this.setSqlStatement(getValueOfXMLNode(document,"sql-query"));
-			
+			this.setCsvfile(getValueOfXMLNode(document, "csv-file-to-export"));
+			this.setDelimeter(getValueOfXMLNode(document, "delimeter").charAt(0));
+			this.setDbtype(getValueOfXMLNode(document, "dbtype"));
+			this.setLocalhost(getValueOfXMLNode(document, "host"));
+			this.setDatabase(getValueOfXMLNode(document, "database_name"));
+			this.setUser(getValueOfXMLNode(document, "user"));
+			this.setPassword(getValueOfXMLNode(document, "password"));
+			this.setPort(getValueOfXMLNode(document, "port"));
+			this.setSqlStatement(getValueOfXMLNode(document, "sql-query"));
 
-			
-			
 			System.out.println("Datenbank aus XML Datei: " + this.getDatabase());
 			System.out.println("Datenbank Typ aus XML Datei: " + this.getDbtype());
 			System.out.println("Datenbanknutzer aus XML Datei lesen: " + this.getUser());
@@ -159,14 +149,27 @@ public class ConfigurationDBToCvs {
 
 	}
 
-
 	public Connection getConnectionToDb() {
 		/* Auch hier redundaten Kode neutralisieren */
 		if (this.getDbtype().equals("mysql")) {
-			
+
 			try {
-				conToDb = DriverManager.getConnection("jdbc:mysql://" + this.localhost+ ":" + this.getPort()+ "/" + this.getDatabase() + "?" + "user="
-						+ this.getUser() + "&password=" + this.getPassword());
+				conToDb = DriverManager.getConnection("jdbc:mysql://" + this.localhost + ":" + this.getPort() + "/"
+						+ this.getDatabase() + "?" + "user=" + this.getUser() + "&password=" + this.getPassword());
+
+			} catch (SQLException ex) {
+				// handle any errors
+				System.out.println("SQLException: " + ex.getMessage());
+				System.out.println("SQLState: " + ex.getSQLState());
+				System.out.println("VendorError: " + ex.getErrorCode());
+			}
+			return conToDb;
+		}
+
+		if (this.getDbtype().equals("sqlite")) {
+
+			try {
+				conToDb = DriverManager.getConnection("jdbc:sqlite://" + this.getDatabase());
 
 			} catch (SQLException ex) {
 				// handle any errors
@@ -178,15 +181,12 @@ public class ConfigurationDBToCvs {
 		}
 		return null;
 
-
 	}
-	
-	
-	private String getValueOfXMLNode(Document document, String xmlNode){
-		String xmlNodeValue=xmlNode;
+
+	private String getValueOfXMLNode(Document document, String xmlNode) {
+		String xmlNodeValue = xmlNode;
 		/* Die Methode funktioniert noch nicht */
-		
-		
+
 		NodeList nodeOfTag = document.getElementsByTagName(xmlNodeValue);
 		Element elementOfTag = (Element) nodeOfTag.item(0);
 		String valueOfElement = elementOfTag.getFirstChild().getTextContent();
