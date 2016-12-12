@@ -26,8 +26,12 @@ public class ExportDbToCVS {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
-		String pathOfConfigFile = args[0];
+		String pathOfConfigFile = null;
+		if(args.length==1){
+			pathOfConfigFile=args[0];
+		}
+			
+		
 		boolean configFileExists = false;
 		/*
 		 * If first argument is an path to config file then use it. In other
@@ -37,12 +41,19 @@ public class ExportDbToCVS {
 			Path path = Paths.get(pathOfConfigFile);
 			System.out.println("Übergebener Pfad: " + pathOfConfigFile);
 			configFileExists = Files.exists(path, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
-			System.out.println("Config File Exists: " + configFileExists);
+			//System.out.println("Config File Exists: " + configFileExists);
+		}
+		else{
+			configFileExists=false;
+			System.out.println("Es wird die Standart Konfigurationsdatei verwendet.\nWenn Sie eine andere Konfigurationsdatei verwenden wollen, so uebergeben Sie bitte den Pfad zur Konfigurationsdatei als Parameter!");
 		}
 		ConfigurationDBToCvs cDbToCvs = new ConfigurationDBToCvs();
 		if (configFileExists == true) {
 			System.out.println("Lese Config Datei: " + pathOfConfigFile);
 			cDbToCvs.readConfigFile(pathOfConfigFile);
+		}
+		else{
+			cDbToCvs.readConfigFile("dbtocvs_config.xml");
 		}
 		Connection con = cDbToCvs.getConnectionToDb();
 		try {

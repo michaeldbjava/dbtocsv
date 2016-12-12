@@ -16,12 +16,6 @@
 	<!-- Tabel to map -->
 	<sql-query>select * from mitarbeiter</sql-query>
 	
-	<csv-file-to-export>FiBu-Profin-Bewegungsdaten.csv</csv-file-to-export>
+	<csv-file-to-export>mitarbeiter.csv</csv-file-to-export>
 	<delimeter>;</delimeter>	
-	
-	
-	
-
-	
-
 </dbtocvs>

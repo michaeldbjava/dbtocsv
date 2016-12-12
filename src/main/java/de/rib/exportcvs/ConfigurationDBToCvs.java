@@ -9,9 +9,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -116,8 +119,14 @@ public class ConfigurationDBToCvs {
 	public boolean readConfigFile(String pathXMLConfigFile) {
 		try {
 			File xmlFile = new File(pathXMLConfigFile);
-
+			File xsdFile = new File("dbtocvs_config_schema.xsd");
+			
+			
+			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			Schema schema = schemaFactory.newSchema(xsdFile);
+			
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			dbFactory.setSchema(schema);
 			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(xmlFile);
 
@@ -130,20 +139,20 @@ public class ConfigurationDBToCvs {
 			this.setPassword(getValueOfXMLNode(document, "password"));
 			this.setPort(getValueOfXMLNode(document, "port"));
 			this.setSqlStatement(getValueOfXMLNode(document, "sql-query"));
-
-			System.out.println("Datenbank aus XML Datei: " + this.getDatabase());
-			System.out.println("Datenbank Typ aus XML Datei: " + this.getDbtype());
-			System.out.println("Datenbanknutzer aus XML Datei lesen: " + this.getUser());
-			System.out.println("Passwort aus XML Datei lesen: " + this.getPassword());
-			System.out.println("Datenbank Port aus XML Datei lesen: " + this.getPort());
+			System.out.println("DB Typ: " + this.getDbtype());
+			System.out.println("Datenbank: " + this.getDatabase());
 			System.out.println("SQL-Abfrage: " + this.getSqlStatement());
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} catch (SAXException se) {
-			se.printStackTrace();
-		} catch (ParserConfigurationException pe) {
-			pe.printStackTrace();
-		}
+			}
+			catch(IOException ioe){
+				System.out.println(ioe.getMessage());
+			}
+			catch(ParserConfigurationException pce){
+				System.out.println(pce.getMessage());
+			}
+			catch(SAXException se){
+				System.out.println("Message: " + se.getMessage());
+				
+			}
 
 		return true;
 
@@ -179,6 +188,7 @@ public class ConfigurationDBToCvs {
 			}
 			return conToDb;
 		}
+		
 		return null;
 
 	}
