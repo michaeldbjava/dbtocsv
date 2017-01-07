@@ -16,6 +16,12 @@
 	<!-- Tabel to map -->
 	<sql-query>select * from mitarbeiter</sql-query>
 	
-	<csv-file-to-export>mitarbeiter.csv</csv-file-to-export>
-	<delimeter>;</delimeter>	
+	<csv-file-to-export>
+		<filename>mitarbeiter.csv</filename>
+		<file_encoding>cp1252</file_encoding>
+		<delimeter>;</delimeter>	
+	
+	
+	</csv-file-to-export>
+	
 </dbtocvs>

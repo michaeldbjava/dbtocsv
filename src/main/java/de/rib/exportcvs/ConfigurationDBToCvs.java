@@ -27,6 +27,7 @@ import org.xml.sax.SAXException;
  */
 public class ConfigurationDBToCvs {
 	private String csvfile;
+	private String csvfileEncoding;
 	private String localhost;
 	private String database;
 	private String dbtype;
@@ -116,6 +117,15 @@ public class ConfigurationDBToCvs {
 		this.delimeter = delimeter;
 	}
 
+	
+	public String getCsvfileEncoding() {
+		return csvfileEncoding;
+	}
+
+	public void setCsvfileEncoding(String csvfileEncoding) {
+		this.csvfileEncoding = csvfileEncoding;
+	}
+
 	public boolean readConfigFile(String pathXMLConfigFile) {
 		try {
 			File xmlFile = new File(pathXMLConfigFile);
@@ -130,7 +140,8 @@ public class ConfigurationDBToCvs {
 			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(xmlFile);
 
-			this.setCsvfile(getValueOfXMLNode(document, "csv-file-to-export"));
+			this.setCsvfile(getValueOfXMLNode(document, "filename"));
+			this.setCsvfileEncoding(getValueOfXMLNode(document, "file_encoding"));
 			this.setDelimeter(getValueOfXMLNode(document, "delimeter").charAt(0));
 			this.setDbtype(getValueOfXMLNode(document, "dbtype"));
 			this.setLocalhost(getValueOfXMLNode(document, "host"));
@@ -195,7 +206,6 @@ public class ConfigurationDBToCvs {
 
 	private String getValueOfXMLNode(Document document, String xmlNode) {
 		String xmlNodeValue = xmlNode;
-		/* Die Methode funktioniert noch nicht */
 
 		NodeList nodeOfTag = document.getElementsByTagName(xmlNodeValue);
 		Element elementOfTag = (Element) nodeOfTag.item(0);

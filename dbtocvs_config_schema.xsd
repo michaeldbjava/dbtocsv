@@ -16,8 +16,17 @@
 					</xs:complexType>
 				</xs:element>
 				<xs:element name="sql-query" type="xs:string"/>
-				<xs:element name="csv-file-to-export" type="xs:string"/>
-				<xs:element name="delimeter" type="xs:string"/>
+				<xs:element name="csv-file-to-export">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="filename" type="xs:string" />
+							<xs:element name="file_encoding" type="xs:string" />
+							<xs:element name="delimeter" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				
+				
 				
 						
 			

@@ -65,7 +65,7 @@ public class ExportDbToCVS {
 			
 			//FileWriter fileWriter = new FileWriter(cDbToCvs.getCsvfile());
 			Writer out = new BufferedWriter(new OutputStreamWriter(
-				    new FileOutputStream(cDbToCvs.getCsvfile()), "UTF-8"));
+				    new FileOutputStream(cDbToCvs.getCsvfile()), cDbToCvs.getCsvfileEncoding()));
 			
 			//CSVFormat csvFormat = CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").withHeader(rs).RFC4180;
 			CSVFormat csvFormat = CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").withHeader(rs);
