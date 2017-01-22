@@ -37,32 +37,43 @@ public class ExportDbToCVS {
 		 * If first argument is an path to config file then use it. In other
 		 * case use default file
 		 */
+		ConfigurationDBToCvs cDbToCvs = new ConfigurationDBToCvs();
 		if (args.length != 0) {
 			Path path = Paths.get(pathOfConfigFile);
-			System.out.println("Übergebener Pfad: " + pathOfConfigFile);
+			System.out.println("Es wurde eine Konfigurationsdatei unter folgenden Pfad angegeben: " + pathOfConfigFile);
 			configFileExists = Files.exists(path, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
+			if(configFileExists==true){
+				System.out.println("Lese Config Datei: " + pathOfConfigFile);
+				cDbToCvs.readConfigFile(pathOfConfigFile);
+			}
+			else{
+				//throw new Exception("Die unter dem Pfad angegebene Konfigurationsdatei existiert nicht!");
+				System.out.println("Die unter dem Pfad angegebene Konfigurationsdatei existiert nicht!");
+			}
 			//System.out.println("Config File Exists: " + configFileExists);
 		}
 		else{
 			configFileExists=false;
 			System.out.println("Es wird die Standart Konfigurationsdatei verwendet.\nWenn Sie eine andere Konfigurationsdatei verwenden wollen, so uebergeben Sie bitte den Pfad zur Konfigurationsdatei als Parameter!");
+			Path path = Paths.get("dbtocvs_config.xml");
+			configFileExists = Files.exists(path, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
+			if(configFileExists==true)
+				cDbToCvs.readConfigFile("dbtocvs_config.xml");
+			else
+				System.out.println("Die Standart Konfigurationsdatei existiert nicht");
 		}
-		ConfigurationDBToCvs cDbToCvs = new ConfigurationDBToCvs();
-		if (configFileExists == true) {
-			System.out.println("Lese Config Datei: " + pathOfConfigFile);
-			cDbToCvs.readConfigFile(pathOfConfigFile);
-		}
-		else{
-			cDbToCvs.readConfigFile("dbtocvs_config.xml");
-		}
+		
+		
+		
+		
+		
+
 		Connection con = cDbToCvs.getConnectionToDb();
 		try {
-			System.out.println("Verbindung ist geschlossen: " + con.isClosed());
+			
 			Statement statement = con.createStatement();
 			ResultSet rs = statement.executeQuery(cDbToCvs.getSqlStatement());
-			int colCount = rs.getMetaData().getColumnCount();
-			System.out.println("Spaltenanzahl des RS" + rs.getMetaData().getColumnCount());
-			
+			System.out.println("Die SQL Abfrage wurde erfolgreich durchgeführt!");
 			//FileWriter fileWriter = new FileWriter(cDbToCvs.getCsvfile());
 			Writer out = new BufferedWriter(new OutputStreamWriter(
 				    new FileOutputStream(cDbToCvs.getCsvfile()), cDbToCvs.getCsvfileEncoding()));
@@ -77,8 +88,11 @@ public class ExportDbToCVS {
 			
 			out.flush();
 			out.close();
+			System.out.println("Die CSV Datei wurde erfolgreich als Datei gepseichert.");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println("Die SQL Abfrage hat einen Fehler verursucht.");
+			System.out.println(e.getLocalizedMessage());
+			
 		} catch (IOException i) {
 			i.printStackTrace();
 		}
