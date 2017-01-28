@@ -22,6 +22,7 @@
 							<xs:element name="filename" type="xs:string" />
 							<xs:element name="file_encoding" type="xs:string" />
 							<xs:element name="delimeter" type="xs:string"/>
+							<xs:element name="overwrite" type="xs:boolean" default="true"/>
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>

@@ -36,6 +36,7 @@ public class ConfigurationDBToCvs {
 	private String password;
 	private String sqlStatement;
 	private char delimeter;
+	private boolean overwrite;
 	private Connection conToDb = null;
 
 	/**
@@ -125,6 +126,16 @@ public class ConfigurationDBToCvs {
 	public void setCsvfileEncoding(String csvfileEncoding) {
 		this.csvfileEncoding = csvfileEncoding;
 	}
+	
+	
+
+	public boolean isOverwrite() {
+		return overwrite;
+	}
+
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
+	}
 
 	public boolean readConfigFile(String pathXMLConfigFile) {
 		try {
@@ -150,9 +161,11 @@ public class ConfigurationDBToCvs {
 			this.setPassword(getValueOfXMLNode(document, "password"));
 			this.setPort(getValueOfXMLNode(document, "port"));
 			this.setSqlStatement(getValueOfXMLNode(document, "sql-query"));
+			this.setOverwrite(Boolean.parseBoolean(getValueOfXMLNode(document, "overwrite")));
 			System.out.println("DB Typ: " + this.getDbtype());
 			System.out.println("Datenbank: " + this.getDatabase());
 			System.out.println("SQL-Abfrage: " + this.getSqlStatement());
+			System.out.println("Überschreibemodus aktiv: " + this.isOverwrite());
 			}
 			catch(IOException ioe){
 				System.out.println(ioe.getMessage());

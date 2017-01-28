@@ -20,7 +20,7 @@
 		<filename>mitarbeiter.csv</filename>
 		<file_encoding>cp1252</file_encoding>
 		<delimeter>;</delimeter>	
-	
+		<overwrite>true</overwrite>
 	
 	</csv-file-to-export>
 	
