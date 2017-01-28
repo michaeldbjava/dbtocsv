@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dbtocvs>
+<dbtocsv>
 	
 	<database>
 		<!-- dbtypes: mysql, (future release ... mssql, postgrsql ) datbase: select 
@@ -24,4 +24,4 @@
 	
 	</csv-file-to-export>
 	
-</dbtocvs>
+</dbtocsv>
