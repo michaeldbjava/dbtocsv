@@ -18,9 +18,9 @@ import java.sql.Statement;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-public class ExportDbToCVS {
+public class ExportDbToCSV {
 
-	public ExportDbToCVS() {
+	public ExportDbToCSV() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -37,7 +37,7 @@ public class ExportDbToCVS {
 		 * If first argument is an path to config file then use it. In other
 		 * case use default file
 		 */
-		ConfigurationDBToCvs cDbToCvs = new ConfigurationDBToCvs();
+		ConfigurationDBToCsv cDbToCvs = new ConfigurationDBToCsv();
 		if (args.length != 0) {
 			Path path = Paths.get(pathOfConfigFile);
 			System.out.println("Es wurde eine Konfigurationsdatei unter folgenden Pfad angegeben: " + pathOfConfigFile);
@@ -55,10 +55,10 @@ public class ExportDbToCVS {
 			configFileExists = false;
 			System.out.println(
 					"Es wird die Standart Konfigurationsdatei verwendet.\nWenn Sie eine andere Konfigurationsdatei verwenden wollen, so uebergeben Sie bitte den Pfad zur Konfigurationsdatei als Parameter!");
-			Path path = Paths.get("dbtocvs_config.xml");
+			Path path = Paths.get("dbtocsv_config.xml");
 			configFileExists = Files.exists(path, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
 			if (configFileExists == true)
-				cDbToCvs.readConfigFile("dbtocvs_config.xml");
+				cDbToCvs.readConfigFile("dbtocsv_config.xml");
 			else
 				System.out.println("Die Standart Konfigurationsdatei existiert nicht");
 		}

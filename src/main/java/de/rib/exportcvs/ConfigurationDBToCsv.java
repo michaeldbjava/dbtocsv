@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
  * @author michael
  *
  */
-public class ConfigurationDBToCvs {
+public class ConfigurationDBToCsv {
 	private String csvfile;
 	private String csvfileEncoding;
 	private String localhost;
@@ -42,7 +42,7 @@ public class ConfigurationDBToCvs {
 	/**
 	 * 
 	 */
-	public ConfigurationDBToCvs() {
+	public ConfigurationDBToCsv() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -140,7 +140,7 @@ public class ConfigurationDBToCvs {
 	public boolean readConfigFile(String pathXMLConfigFile) {
 		try {
 			File xmlFile = new File(pathXMLConfigFile);
-			File xsdFile = new File("dbtocvs_config_schema.xsd");
+			File xsdFile = new File("dbtocsv_config_schema.xsd");
 			
 			
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
