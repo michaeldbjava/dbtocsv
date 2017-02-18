@@ -1,45 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema"  elementFormDefault="qualified">
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
 	<xs:element name="dbtocsv">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="database">	
+				<xs:element name="database">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="dbtype" type="xs:string"/>
-							<xs:element name="database_name" type="xs:string"/>
-							<xs:element name="host" type="xs:string"/>
-							<xs:element name="port" type="xs:string"/>
-							<xs:element name="user" type="xs:string"/>
-							<xs:element name="password" type="xs:string"/>
+							<xs:element name="dbtype" type="xs:string" />
+							<xs:element name="database_name" type="xs:string" />
+							<xs:element name="host" type="xs:string" />
+							<xs:element name="port" type="xs:string" />
+							<xs:element name="user" type="xs:string" />
+							<xs:element name="password" type="xs:string" />
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<xs:element name="sql-query" type="xs:string"/>
+				<xs:element name="sql-query" type="xs:string" />
 				<xs:element name="csv-file-to-export">
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="filename" type="xs:string" />
 							<xs:element name="file_encoding" type="xs:string" />
-							<xs:element name="delimeter" type="xs:string"/>
-							<xs:element name="overwrite" type="xs:boolean" default="true"/>
+							<xs:element name="delimeter" type="xs:string" />
+							<xs:element name="overwrite" type="xs:boolean"
+								default="true" />
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<!-- 
-				If this element exists the export application will check to the table 
-				which has been queried to a column named exported_date. If the column exists 
-				it will be updated with the actuell export date value. If the column not exists
-				nothing will be happened. 
-				
-				if the content of the element after-export-update is true, the appliction will try
-				to update the rows on the table which has been selected from the table and have been exported as csv file.
-				is it false, nothing happens.
-				if this element not exists also nothing will be updateted
-				-->
-				<xs:element name="after-export-update" type="xs:string" minOccurs="0" maxOccurs="1"/>
-						
-			
+				<!-- If this element exists the export application will check to the 
+					table which has been queried to a column named exported_date. If the column 
+					exists it will be updated with the actuell export date value. If the column 
+					not exists nothing will be happened. if the content of the element after-export-update 
+					is true, the appliction will try to update the rows on the table which has 
+					been selected from the table and have been exported as csv file. is it false, 
+					nothing happens. if this element not exists also nothing will be updateted 
+					This is old version of element after-export-update <xs:element name="after-export-update" 
+					type="xs:string" minOccurs="0" maxOccurs="1"/> -->
+
+				<xs:element name="after-export-update" minOccurs="0"
+					maxOccurs="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="true" />
+							<xs:enumeration value="false" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

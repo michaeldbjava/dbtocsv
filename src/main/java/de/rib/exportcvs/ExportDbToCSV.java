@@ -85,6 +85,34 @@ public class ExportDbToCSV {
 				ResultSet rs = statement.executeQuery(cDbToCvs.getSqlStatement());
 				
 				
+				
+				System.out.println("Die SQL Abfrage wurde erfolgreich durchgeführt!");
+				// FileWriter fileWriter = new
+				// FileWriter(cDbToCvs.getCsvfile());
+				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cDbToCvs.getCsvfile()),
+						cDbToCvs.getCsvfileEncoding()));
+
+				// CSVFormat csvFormat =
+				// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").withHeader(rs).RFC4180;
+			
+				CSVFormat csvFormat = CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n")
+						.withHeader(rs);
+				// CSVFormat csvFormat =
+				// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").MYSQL;
+				// CSVPrinter csvPrinter = new CSVPrinter(fileWriter,
+				// csvFormat);
+				// CSVFormat csvFormat = CSVFormat.MYSQL.withHeader(rs);
+				CSVPrinter csvPrinter = new CSVPrinter(out, csvFormat);
+				csvPrinter.printRecords(rs);
+
+				out.flush();
+				out.close();
+				System.out.println("Die CSV Datei wurde erfolgreich als Datei gespeichert.");
+				
+				
+				/* Hier den Schalter der Konfigurationsdatei auslesen und auswerten.*/ 
+				
+				
 				java.sql.ResultSetMetaData rsmd = rs.getMetaData();
 
 				String tableName = rsmd.getTableName(1);
@@ -104,6 +132,7 @@ public class ExportDbToCSV {
 				ResultSet rsPrimaryKey = con.getMetaData().getPrimaryKeys(null, null, tableName);
 				String whereExpression = "";
 				ArrayList<String> updateSQLList = new ArrayList<String>();
+				rs.beforeFirst();
 				while (rs.next()) {
 					whereExpression = "";
 					rsPrimaryKey.beforeFirst();
@@ -147,29 +176,12 @@ public class ExportDbToCSV {
 				}
 
 				System.out.println("Export Table Name: " + tableName);
-				System.out.println("Die SQL Abfrage wurde erfolgreich durchgeführt!");
-				// FileWriter fileWriter = new
-				// FileWriter(cDbToCvs.getCsvfile());
-				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cDbToCvs.getCsvfile()),
-						cDbToCvs.getCsvfileEncoding()));
-
-				// CSVFormat csvFormat =
-				// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").withHeader(rs).RFC4180;
-				rs.beforeFirst();
-				CSVFormat csvFormat = CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n")
-						.withHeader(rs);
-				// CSVFormat csvFormat =
-				// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").MYSQL;
-				// CSVPrinter csvPrinter = new CSVPrinter(fileWriter,
-				// csvFormat);
-				// CSVFormat csvFormat = CSVFormat.MYSQL.withHeader(rs);
-				CSVPrinter csvPrinter = new CSVPrinter(out, csvFormat);
-				csvPrinter.printRecords(rs);
-
-				out.flush();
-				out.close();
-				System.out.println("Die CSV Datei wurde erfolgreich als Datei gespeichert.");
+				
+				
 				Statement updateStatement = con.createStatement();
+				
+				
+				
 				for (String updateSQLValue : updateSQLList) {
 					updateStatement.addBatch(updateSQLValue);
 				}
