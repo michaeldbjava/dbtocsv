@@ -119,7 +119,6 @@ public class ConfigurationDBToCsv {
 		this.delimeter = delimeter;
 	}
 
-	
 	public String getCsvfileEncoding() {
 		return csvfileEncoding;
 	}
@@ -127,8 +126,6 @@ public class ConfigurationDBToCsv {
 	public void setCsvfileEncoding(String csvfileEncoding) {
 		this.csvfileEncoding = csvfileEncoding;
 	}
-	
-	
 
 	public boolean isOverwrite() {
 		return overwrite;
@@ -137,8 +134,6 @@ public class ConfigurationDBToCsv {
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
-	
-	
 
 	public String getAfterExportUpdate() {
 		return afterExportUpdate;
@@ -152,11 +147,10 @@ public class ConfigurationDBToCsv {
 		try {
 			File xmlFile = new File(pathXMLConfigFile);
 			File xsdFile = new File("dbtocsv_config_schema.xsd");
-			
-			
+
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(xsdFile);
-			
+
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			dbFactory.setSchema(schema);
 			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
@@ -172,24 +166,21 @@ public class ConfigurationDBToCsv {
 			this.setPassword(getValueOfXMLNode(document, "password"));
 			this.setPort(getValueOfXMLNode(document, "port"));
 			this.setSqlStatement(getValueOfXMLNode(document, "sql-query"));
-			
+
 			this.setOverwrite(Boolean.parseBoolean(getValueOfXMLNode(document, "overwrite")));
 			this.setAfterExportUpdate(getValueOfXMLNode(document, "after-export-update"));
 			System.out.println("DB Typ: " + this.getDbtype());
 			System.out.println("Datenbank: " + this.getDatabase());
 			System.out.println("SQL-Abfrage: " + this.getSqlStatement());
 			System.out.println("Überschreibemodus aktiv: " + this.isOverwrite());
-			}
-			catch(IOException ioe){
-				System.out.println(ioe.getMessage());
-			}
-			catch(ParserConfigurationException pce){
-				System.out.println(pce.getMessage());
-			}
-			catch(SAXException se){
-				System.out.println("Message: " + se.getMessage());
-				
-			}
+		} catch (IOException ioe) {
+			System.out.println(ioe.getMessage());
+		} catch (ParserConfigurationException pce) {
+			System.out.println(pce.getMessage());
+		} catch (SAXException se) {
+			System.out.println("Message: " + se.getMessage());
+
+		}
 
 		return true;
 
@@ -225,9 +216,23 @@ public class ConfigurationDBToCsv {
 			}
 			return conToDb;
 		}
-		
+
 		return null;
 
+	}
+
+	public boolean checkConnection() {
+		try {
+			if (conToDb != null && conToDb.isValid(1000))
+				return true;
+			else{
+				return false;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	private String getValueOfXMLNode(Document document, String xmlNode) {
@@ -235,16 +240,14 @@ public class ConfigurationDBToCsv {
 
 		NodeList nodeOfTag = document.getElementsByTagName(xmlNodeValue);
 		Element elementOfTag = (Element) nodeOfTag.item(0);
-		String valueOfElement=null;
-		if(elementOfTag.getFirstChild()!=null){
-			valueOfElement= elementOfTag.getFirstChild().getTextContent();
+		String valueOfElement = null;
+		if (elementOfTag.getFirstChild() != null) {
+			valueOfElement = elementOfTag.getFirstChild().getTextContent();
 			return valueOfElement;
-		}
-		else{
+		} else {
 			return null;
 		}
-		 
-		
+
 	}
 
 }

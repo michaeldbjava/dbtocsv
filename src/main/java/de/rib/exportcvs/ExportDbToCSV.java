@@ -69,127 +69,144 @@ public class ExportDbToCSV {
 		}
 
 		Connection con = cDbToCvs.getConnectionToDb();
+
 		try {
-			// Als erstes prüfen, ob bereits eine Ausgabedatei unter dem Pfad
-			// existiert
-			Path pathOutputFile = Paths.get(cDbToCvs.getCsvfile());
 
-			boolean outputfileExists = Files.exists(pathOutputFile, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
-			cDbToCvs.getCsvfile();
-			if (outputfileExists && cDbToCvs.isOverwrite() || !outputfileExists) {
-				if (outputfileExists && cDbToCvs.isOverwrite())
-					System.out.println("Ausgabedatei existiert und soll überschrieben werden");
-				if (!outputfileExists)
-					System.out.println("Die Ausgabedatei ist noch nicht existent");
-				Statement statement = con.createStatement();
-				ResultSet rs = statement.executeQuery(cDbToCvs.getSqlStatement());
-				
-				
-				
-				System.out.println("Die SQL Abfrage wurde erfolgreich durchgeführt!");
-				// FileWriter fileWriter = new
-				// FileWriter(cDbToCvs.getCsvfile());
-				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cDbToCvs.getCsvfile()),
-						cDbToCvs.getCsvfileEncoding()));
+			if (con != null && con.isValid(1000)) {
 
-				// CSVFormat csvFormat =
-				// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").withHeader(rs).RFC4180;
-			
-				CSVFormat csvFormat = CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n")
-						.withHeader(rs);
-				// CSVFormat csvFormat =
-				// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").MYSQL;
-				// CSVPrinter csvPrinter = new CSVPrinter(fileWriter,
-				// csvFormat);
-				// CSVFormat csvFormat = CSVFormat.MYSQL.withHeader(rs);
-				CSVPrinter csvPrinter = new CSVPrinter(out, csvFormat);
-				csvPrinter.printRecords(rs);
+				System.out.println(
+						"Mit den Angaben in der Konfigurationsdatei konnte erfolgreich eine Verbindung zur Datenbank hergestellt werden! ");
+				// Als erstes prüfen, ob bereits eine Ausgabedatei unter dem
+				// Pfad
+				// existiert
+				Path pathOutputFile = Paths.get(cDbToCvs.getCsvfile());
 
-				out.flush();
-				out.close();
-				System.out.println("Die CSV Datei wurde erfolgreich als Datei gespeichert.");
-				
-				
-				/* Hier den Schalter der Konfigurationsdatei auslesen und auswerten.*/ 
-				
-				
-				java.sql.ResultSetMetaData rsmd = rs.getMetaData();
+				boolean outputfileExists = Files.exists(pathOutputFile, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
+				cDbToCvs.getCsvfile();
+				if (outputfileExists && cDbToCvs.isOverwrite() || !outputfileExists) {
+					if (outputfileExists && cDbToCvs.isOverwrite())
+						System.out.println("Ausgabedatei existiert und soll überschrieben werden");
+					if (!outputfileExists)
+						System.out.println("Die Ausgabedatei ist noch nicht existent");
+					Statement statement = con.createStatement();
+					ResultSet rs = statement.executeQuery(cDbToCvs.getSqlStatement());
 
-				String tableName = rsmd.getTableName(1);
-				/* exported_date */
+					System.out.println("Die SQL Abfrage wurde erfolgreich durchgeführt!");
+					// FileWriter fileWriter = new
+					// FileWriter(cDbToCvs.getCsvfile());
+					Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cDbToCvs.getCsvfile()),
+							cDbToCvs.getCsvfileEncoding()));
 
-				int colCount = rsmd.getColumnCount();
-				boolean exportedDateColumnExists = false;
-				for (int i = 1; i < colCount + 1; i++) {
-					String columnName = rsmd.getColumnName(i);
-					System.out.println(columnName);
-					if (columnName != null && columnName.equals("exported_date")) {
-						exportedDateColumnExists = true;
-					}
-				}
+					// CSVFormat csvFormat =
+					// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").withHeader(rs).RFC4180;
 
-				String updateSQL = "update " + tableName + " set exported_date=now() where ";
-				ResultSet rsPrimaryKey = con.getMetaData().getPrimaryKeys(null, null, tableName);
-				String whereExpression = "";
-				ArrayList<String> updateSQLList = new ArrayList<String>();
-				rs.beforeFirst();
-				while (rs.next()) {
-					whereExpression = "";
-					rsPrimaryKey.beforeFirst();
-					while (rsPrimaryKey.next()) {
-						boolean isNumber = false;
-						String columnName = rsPrimaryKey.getString("COLUMN_NAME");
-						DatabaseMetaData rbMD = con.getMetaData();
-						ResultSet rsColumnMeta = rbMD.getColumns(null, null, tableName, columnName);
-						System.out.println("----------------");
-						while (rsColumnMeta.next()) {
-							int type = rsColumnMeta.getInt(5);
-							if (type == Types.BIGINT || type == Types.BIT || type == Types.DECIMAL
-									|| type == Types.DOUBLE || type == Types.FLOAT || type == Types.INTEGER
-									|| type == Types.NUMERIC || type == Types.SMALLINT) {
-								isNumber = true;
+					CSVFormat csvFormat = CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n")
+							.withHeader(rs);
+					// CSVFormat csvFormat =
+					// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").MYSQL;
+					// CSVPrinter csvPrinter = new CSVPrinter(fileWriter,
+					// csvFormat);
+					// CSVFormat csvFormat = CSVFormat.MYSQL.withHeader(rs);
+					CSVPrinter csvPrinter = new CSVPrinter(out, csvFormat);
+					csvPrinter.printRecords(rs);
+
+					out.flush();
+					out.close();
+					System.out.println("Die CSV Datei wurde erfolgreich als Datei gespeichert.");
+
+					/*
+					 * Hier den Schalter der Konfigurationsdatei auslesen und
+					 * auswerten.
+					 */
+
+					if (cDbToCvs.getAfterExportUpdate() != null && cDbToCvs.getAfterExportUpdate().equals("true")) {
+						System.out.println("Start after-export-update activities!");
+						java.sql.ResultSetMetaData rsmd = rs.getMetaData();
+
+						String tableName = rsmd.getTableName(1);
+						/* exported_date */
+
+						int colCount = rsmd.getColumnCount();
+						boolean exportedDateColumnExists = false;
+						for (int i = 1; i < colCount + 1; i++) {
+							String columnName = rsmd.getColumnName(i);
+							System.out.println(columnName);
+							if (columnName != null && columnName.equals("exported_date")) {
+								exportedDateColumnExists = true;
 							}
 						}
-						// System.out.println("Primary Key: " + columnName);
-						if (rsPrimaryKey.isLast()) {
-							if (isNumber == true)
-								whereExpression = whereExpression + columnName + "=" + rs.getString(columnName);
-							else if (isNumber == false)
-								whereExpression = whereExpression + columnName + "='" + rs.getString(columnName) + "'";
 
-						} else {
-							if (isNumber == true)
-								whereExpression = whereExpression + columnName + "=" + rs.getString(columnName)
-										+ " and ";
-							else if (isNumber == false)
-								whereExpression = whereExpression + columnName + "='" + rs.getString(columnName) + "'"
-										+ " and ";;
+						String updateSQL = "update " + tableName + " set exported_date=now() where ";
+						ResultSet rsPrimaryKey = con.getMetaData().getPrimaryKeys(null, null, tableName);
+						String whereExpression = "";
+						ArrayList<String> updateSQLList = new ArrayList<String>();
+						rs.beforeFirst();
+						while (rs.next()) {
+							whereExpression = "";
+							rsPrimaryKey.beforeFirst();
+							while (rsPrimaryKey.next()) {
+								boolean isNumber = false;
+								String columnName = rsPrimaryKey.getString("COLUMN_NAME");
+								DatabaseMetaData rbMD = con.getMetaData();
+								ResultSet rsColumnMeta = rbMD.getColumns(null, null, tableName, columnName);
+								// System.out.println("----------------");
+								while (rsColumnMeta.next()) {
+									int type = rsColumnMeta.getInt(5);
+									if (type == Types.BIGINT || type == Types.BIT || type == Types.DECIMAL
+											|| type == Types.DOUBLE || type == Types.FLOAT || type == Types.INTEGER
+											|| type == Types.NUMERIC || type == Types.SMALLINT) {
+										isNumber = true;
+									}
+								}
+								// System.out.println("Primary Key: " +
+								// columnName);
+								if (rsPrimaryKey.isLast()) {
+									if (isNumber == true)
+										whereExpression = whereExpression + columnName + "=" + rs.getString(columnName);
+									else if (isNumber == false)
+										whereExpression = whereExpression + columnName + "='" + rs.getString(columnName)
+												+ "'";
+
+								} else {
+									if (isNumber == true)
+										whereExpression = whereExpression + columnName + "=" + rs.getString(columnName)
+												+ " and ";
+									else if (isNumber == false)
+										whereExpression = whereExpression + columnName + "='" + rs.getString(columnName)
+												+ "'" + " and ";
+									;
+								}
+								// System.out.println("----------------");
+
+							}
+							whereExpression = whereExpression + ";";
+
+							System.out.println(updateSQL + whereExpression);
+							updateSQLList.add(updateSQL + whereExpression);
+
 						}
-						System.out.println("----------------");
 
+						// System.out.println("Export Table Name: " +
+						// tableName);
+
+						Statement updateStatement = con.createStatement();
+
+						for (String updateSQLValue : updateSQLList) {
+							updateStatement.addBatch(updateSQLValue);
+						}
+						updateStatement.executeBatch();
+						System.out.println("after-export-update wurde durchgeführt!");
+					} else {
+						System.out.println("No after-export-update activities!");
 					}
-					whereExpression = whereExpression + ";";
-
-					System.out.println(updateSQL + whereExpression);
-					updateSQLList.add(updateSQL + whereExpression);
-
+					con.close();
+				} else {
+					System.out.println(
+							"Die Ausgabedatei existiert bereits und soll gemäß der Konfigurationsdatei nicht überschrieben werden!");
 				}
-
-				System.out.println("Export Table Name: " + tableName);
-				
-				
-				Statement updateStatement = con.createStatement();
-				
-				
-				
-				for (String updateSQLValue : updateSQLList) {
-					updateStatement.addBatch(updateSQLValue);
-				}
-				updateStatement.executeBatch();
-				con.close();
-			} else {
-				System.out.println(
-						"Die Ausgabedatei existiert bereits und soll gemäß der Konfigurationsdatei nicht überschrieben werden!");
+			}
+			else{
+				System.out.println("Mit den Angaben in der Konfigurationsdatei konnte keine Verbindung zur Datenbank hergestellt werden! ");
 			}
 		} catch (SQLException e) {
 			System.out.println("Die SQL Abfrage hat einen Fehler verursucht.");
