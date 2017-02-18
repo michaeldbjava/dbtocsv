@@ -11,12 +11,17 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
+import java.util.ArrayList;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+
+import com.mysql.jdbc.ResultSetMetaData;
 
 public class ExportDbToCSV {
 
@@ -74,10 +79,74 @@ public class ExportDbToCSV {
 			if (outputfileExists && cDbToCvs.isOverwrite() || !outputfileExists) {
 				if (outputfileExists && cDbToCvs.isOverwrite())
 					System.out.println("Ausgabedatei existiert und soll überschrieben werden");
-				if(!outputfileExists)
+				if (!outputfileExists)
 					System.out.println("Die Ausgabedatei ist noch nicht existent");
 				Statement statement = con.createStatement();
 				ResultSet rs = statement.executeQuery(cDbToCvs.getSqlStatement());
+				
+				
+				java.sql.ResultSetMetaData rsmd = rs.getMetaData();
+
+				String tableName = rsmd.getTableName(1);
+				/* exported_date */
+
+				int colCount = rsmd.getColumnCount();
+				boolean exportedDateColumnExists = false;
+				for (int i = 1; i < colCount + 1; i++) {
+					String columnName = rsmd.getColumnName(i);
+					System.out.println(columnName);
+					if (columnName != null && columnName.equals("exported_date")) {
+						exportedDateColumnExists = true;
+					}
+				}
+
+				String updateSQL = "update " + tableName + " set exported_date=now() where ";
+				ResultSet rsPrimaryKey = con.getMetaData().getPrimaryKeys(null, null, tableName);
+				String whereExpression = "";
+				ArrayList<String> updateSQLList = new ArrayList<String>();
+				while (rs.next()) {
+					whereExpression = "";
+					rsPrimaryKey.beforeFirst();
+					while (rsPrimaryKey.next()) {
+						boolean isNumber = false;
+						String columnName = rsPrimaryKey.getString("COLUMN_NAME");
+						DatabaseMetaData rbMD = con.getMetaData();
+						ResultSet rsColumnMeta = rbMD.getColumns(null, null, tableName, columnName);
+						System.out.println("----------------");
+						while (rsColumnMeta.next()) {
+							int type = rsColumnMeta.getInt(5);
+							if (type == Types.BIGINT || type == Types.BIT || type == Types.DECIMAL
+									|| type == Types.DOUBLE || type == Types.FLOAT || type == Types.INTEGER
+									|| type == Types.NUMERIC || type == Types.SMALLINT) {
+								isNumber = true;
+							}
+						}
+						// System.out.println("Primary Key: " + columnName);
+						if (rsPrimaryKey.isLast()) {
+							if (isNumber == true)
+								whereExpression = whereExpression + columnName + "=" + rs.getString(columnName);
+							else if (isNumber == false)
+								whereExpression = whereExpression + columnName + "='" + rs.getString(columnName) + "'";
+
+						} else {
+							if (isNumber == true)
+								whereExpression = whereExpression + columnName + "=" + rs.getString(columnName)
+										+ " and ";
+							else if (isNumber == false)
+								whereExpression = whereExpression + columnName + "='" + rs.getString(columnName) + "'"
+										+ " and ";;
+						}
+						System.out.println("----------------");
+
+					}
+					whereExpression = whereExpression + ";";
+
+					System.out.println(updateSQL + whereExpression);
+					updateSQLList.add(updateSQL + whereExpression);
+
+				}
+
+				System.out.println("Export Table Name: " + tableName);
 				System.out.println("Die SQL Abfrage wurde erfolgreich durchgeführt!");
 				// FileWriter fileWriter = new
 				// FileWriter(cDbToCvs.getCsvfile());
@@ -86,6 +155,7 @@ public class ExportDbToCSV {
 
 				// CSVFormat csvFormat =
 				// CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n").withHeader(rs).RFC4180;
+				rs.beforeFirst();
 				CSVFormat csvFormat = CSVFormat.newFormat(cDbToCvs.getDelimeter()).withRecordSeparator("\n")
 						.withHeader(rs);
 				// CSVFormat csvFormat =
@@ -98,9 +168,16 @@ public class ExportDbToCSV {
 
 				out.flush();
 				out.close();
-				System.out.println("Die CSV Datei wurde erfolgreich als Datei gepseichert.");
+				System.out.println("Die CSV Datei wurde erfolgreich als Datei gespeichert.");
+				Statement updateStatement = con.createStatement();
+				for (String updateSQLValue : updateSQLList) {
+					updateStatement.addBatch(updateSQLValue);
+				}
+				updateStatement.executeBatch();
+				con.close();
 			} else {
-				System.out.println("Die Ausgabedatei existiert bereits und soll gemäß der Konfigurationsdatei nicht überschrieben werden!");
+				System.out.println(
+						"Die Ausgabedatei existiert bereits und soll gemäß der Konfigurationsdatei nicht überschrieben werden!");
 			}
 		} catch (SQLException e) {
 			System.out.println("Die SQL Abfrage hat einen Fehler verursucht.");

@@ -38,6 +38,7 @@ public class ConfigurationDBToCsv {
 	private char delimeter;
 	private boolean overwrite;
 	private Connection conToDb = null;
+	private String afterExportUpdate;
 
 	/**
 	 * 
@@ -136,6 +137,16 @@ public class ConfigurationDBToCsv {
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
+	
+	
+
+	public String getAfterExportUpdate() {
+		return afterExportUpdate;
+	}
+
+	public void setAfterExportUpdate(String afterExportUpdate) {
+		this.afterExportUpdate = afterExportUpdate;
+	}
 
 	public boolean readConfigFile(String pathXMLConfigFile) {
 		try {
@@ -161,7 +172,9 @@ public class ConfigurationDBToCsv {
 			this.setPassword(getValueOfXMLNode(document, "password"));
 			this.setPort(getValueOfXMLNode(document, "port"));
 			this.setSqlStatement(getValueOfXMLNode(document, "sql-query"));
+			
 			this.setOverwrite(Boolean.parseBoolean(getValueOfXMLNode(document, "overwrite")));
+			this.setAfterExportUpdate(getValueOfXMLNode(document, "after-export-update"));
 			System.out.println("DB Typ: " + this.getDbtype());
 			System.out.println("Datenbank: " + this.getDatabase());
 			System.out.println("SQL-Abfrage: " + this.getSqlStatement());
@@ -222,8 +235,16 @@ public class ConfigurationDBToCsv {
 
 		NodeList nodeOfTag = document.getElementsByTagName(xmlNodeValue);
 		Element elementOfTag = (Element) nodeOfTag.item(0);
-		String valueOfElement = elementOfTag.getFirstChild().getTextContent();
-		return valueOfElement;
+		String valueOfElement=null;
+		if(elementOfTag.getFirstChild()!=null){
+			valueOfElement= elementOfTag.getFirstChild().getTextContent();
+			return valueOfElement;
+		}
+		else{
+			return null;
+		}
+		 
+		
 	}
 
 }
