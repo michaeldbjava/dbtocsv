@@ -251,6 +251,8 @@ public class ExportDbToCSV {
 		}
 		}
 		else{
+			System.out.println("****    Die in der Konfigurationsdatei angegeben\n****    Informationen sind nicht valide!");
+			System.out.println("****    ");
 			System.out.println("********************************************");
 			System.out.println("****                      ******************");
 			System.out.println("****    Ende Export!      ******************");
