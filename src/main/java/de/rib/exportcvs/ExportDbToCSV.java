@@ -45,47 +45,64 @@ public class ExportDbToCSV {
 		 * If first argument is an path to config file then use it. In other
 		 * case use default file
 		 */
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
 		ConfigurationDBToCsv cDbToCvs = new ConfigurationDBToCsv();
+		System.out.println("********************************************");
+		System.out.println("********************************************");
+		System.out.println("****                      ******************");
+		System.out.println("****    Starte Export!    ******************");
+		System.out.println("****                      ******************");
+		System.out.println("********************************************");
+		System.out.println("********************************************");
+		System.out.println("****    ");
 		if (args.length != 0) {
 			Path path = Paths.get(pathOfConfigFile);
-			System.out.println("********************************************");
-			System.out.println("****                      ******************");
-			System.out.println("****    Starte Export!    ******************");
-			System.out.println("****                      ******************");
-			System.out.println("********************************************");
-			System.out.println("********************************************");
+			
 			
 			System.out.println(
-					"****    Es wurde eine Konfigurationsdatei unter folgenden Pfad angegeben: " + pathOfConfigFile);
+					"****    1) Es wurde eine Konfigurationsdatei unter folgenden Pfad angegeben: \n****       " + pathOfConfigFile);
+			System.out.println("****    ");
 			configFileExists = Files.exists(path, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
 			if (configFileExists == true) {
-				System.out.println("****    Lese die Konfigurationsdatei Datei: " + pathOfConfigFile);
+				System.out.println("****    2) Lese die Konfigurationsdatei Datei: " + pathOfConfigFile);
+				System.out.println("****    ");
 				cDbToCvs.readConfigFile(pathOfConfigFile);
 			} else {
 				// throw new Exception("Die unter dem Pfad angegebene
 				// Konfigurationsdatei existiert nicht!");
 				System.out.println("****    Die unter dem Pfad angegebene Konfigurationsdatei existiert nicht!");
+				System.out.println("****    ");
+				
 			}
 			// System.out.println("Config File Exists: " + configFileExists);
 		} else {
 			configFileExists = false;
 			System.out.println(
-					"****    Es wird die Standart Konfigurationsdatei verwendet.\nWenn Sie eine andere Konfigurationsdatei verwenden wollen, so uebergeben Sie bitte den Pfad zur Konfigurationsdatei als Parameter!");
-			Path path = Paths.get("dbtocsv_config.xml");
-			configFileExists = Files.exists(path, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
-			if (configFileExists == true)
-				cDbToCvs.readConfigFile("dbtocsv_config.xml");
-			else
-				System.out.println("****    Es existiert keine Standart Konfigurationsdatei!");
+					"****    1) Es wurde keine Konfigurationsdatei angegeben.\n****       Bitte geben Sie eine Konfigurationsdatei an!"
+					+ "\n****       Uebergeben Sie bitte den Pfad zur Konfigurationsdatei als Parameter!"
+					+ "\n****\n****       Der Aufruf des Programms muss wie folgt erfolgen: "
+					+ "\n****\n****        "
+					+ "\n****       java -jar dbtocsv.jar dbtocsv_config_xxx.xml"
+					+ "\n****\n****        "
+					+ "\n****       Lesen Sie bitte die beiligende Dokumentation!"
+					+ "\n****\n****        "
+					);
+	
+			
+				System.out.println("****    2) Das Export Programm wird abgebrochen!" + "\n****\n****        ");
 		}
-		Map<String, String> errorMessages = CheckDBToCsvConfigurationInformation.validateInformation(cDbToCvs);
-
+		
+		if(configFileExists==true){
 		try {
+			Map<String, String> errorMessages = CheckDBToCsvConfigurationInformation.validateInformation(cDbToCvs);
 			if (errorMessages.size() == 0) {
-				System.out.println("****    Der Inhalt der Konfigurationsdatei wurde erfolgreich überprüft.    ****");
+				System.out.println("****    3) Der Inhalt der Konfigurationsdatei wurde erfolgreich überprüft.    ****");
+				System.out.println("****    ");
 
 				Connection con = cDbToCvs.getConnectionToDb();
-				System.out.println("****    Die Verbindung zur Datenbank " + cDbToCvs.getDatabase() + " unter einem " + cDbToCvs.getDbtype() + "Datenbanksystem wurde hergestellt.");
+				System.out.println("****    4) Die Verbindung zur Datenbank " + cDbToCvs.getDatabase() + "\n****       unter einem " + cDbToCvs.getDbtype() + "Datenbanksystem wurde hergestellt.");
+				System.out.println("****    ");
 				// Als erstes prüfen, ob bereits eine Ausgabedatei unter dem
 				// Pfad
 				// existiert
@@ -95,7 +112,8 @@ public class ExportDbToCSV {
 
 				ResultSet rs = statement.executeQuery(cDbToCvs.getSqlStatement());
 
-				System.out.println("****    Die SQL Abfrage wurde erfolgreich durchgeführt!");
+				System.out.println("****    5) Die SQL Abfrage wurde erfolgreich durchgeführt!");
+				System.out.println("****    ");
 				// FileWriter fileWriter = new
 				// FileWriter(cDbToCvs.getCsvfile());
 				Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(cDbToCvs.getCsvfile()),
@@ -112,13 +130,15 @@ public class ExportDbToCSV {
 				// csvFormat);
 				// CSVFormat csvFormat = CSVFormat.MYSQL.withHeader(rs);
 				CSVPrinter csvPrinter = new CSVPrinter(out, csvFormat);
-				System.out.println("****    Schreibe die CSV Datei.");
+				System.out.println("****    6) Schreibe die CSV Datei.");
+				System.out.println("****    ");
 				csvPrinter.printRecords(rs);
 
 				out.flush();
 				out.close();
 				System.out.println(
-						"****    Die CSV Datei + " + cDbToCvs.getCsvfile() + " wurde erfolgreich gespeichert.");
+						"****    7) Die CSV Datei  \n****       " + cDbToCvs.getCsvfile() + "\n****       wurde erfolgreich gespeichert.");
+				System.out.println("****    ");
 
 				/*
 				 * Hier den Schalter der Konfigurationsdatei auslesen und
@@ -126,7 +146,8 @@ public class ExportDbToCSV {
 				 */
 
 				if (cDbToCvs.getAfterExportUpdate() != null && cDbToCvs.getAfterExportUpdate().equals("true")) {
-					System.out.println("****   Start after-export-update activities!");
+					System.out.println("****   8) Start after-export-update activities!");
+					System.out.println("****    ");
 					java.sql.ResultSetMetaData rsmd = rs.getMetaData();
 
 					String tableName = rsmd.getTableName(1);
@@ -187,7 +208,7 @@ public class ExportDbToCSV {
 						}
 						whereExpression = whereExpression + ";";
 
-						System.out.println("****    " + updateSQL + whereExpression);
+						System.out.println("****    9) Führe folgende Aktualisierung durch: " + updateSQL + whereExpression);
 						updateSQLList.add(updateSQL + whereExpression);
 
 					}
@@ -203,7 +224,8 @@ public class ExportDbToCSV {
 					updateStatement.executeBatch();
 					System.out.println("****    after-export-update wurde durchgeführt!");
 				} else {
-					System.out.println("****    No after-export-update activities!");
+					System.out.println("****    8) No after-export-update activities!");
+					System.out.println("****    ");
 				}
 				System.out.println("********************************************");
 				System.out.println("****                      ******************");
@@ -222,10 +244,20 @@ public class ExportDbToCSV {
 			}
 
 		} catch (SQLException e) {
-			System.out.println("****    " + e.getMessage());
+			System.out.println("****    Datenbankfehler: " + e.getMessage());
 
 		} catch (IOException i) {
-			i.printStackTrace();
+			System.out.println("****    Dateischreibfehler: " + i.getMessage());
+		}
+		}
+		else{
+			System.out.println("********************************************");
+			System.out.println("****                      ******************");
+			System.out.println("****    Ende Export!      ******************");
+			System.out.println("****                      ******************");
+			System.out.println("********************************************");
+			System.out.println("********************************************");
+			
 		}
 
 	}
