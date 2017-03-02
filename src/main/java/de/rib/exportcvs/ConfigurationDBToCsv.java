@@ -152,7 +152,9 @@ public class ConfigurationDBToCsv {
 			Schema schema = schemaFactory.newSchema(xsdFile);
 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			
 			dbFactory.setSchema(schema);
+			dbFactory.setValidating(true);
 			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
 			Document document = documentBuilder.parse(xmlFile);
 
