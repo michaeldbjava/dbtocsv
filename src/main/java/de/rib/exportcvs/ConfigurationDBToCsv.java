@@ -36,7 +36,7 @@ public class ConfigurationDBToCsv {
 	private String password;
 	private String sqlStatement;
 	private char delimeter;
-	private boolean overwrite;
+	private boolean overwrite=false;
 	private Connection conToDb = null;
 	private String afterExportUpdate;
 
@@ -169,10 +169,6 @@ public class ConfigurationDBToCsv {
 
 			this.setOverwrite(Boolean.parseBoolean(getValueOfXMLNode(document, "overwrite")));
 			this.setAfterExportUpdate(getValueOfXMLNode(document, "after-export-update"));
-			System.out.println("DB Typ: " + this.getDbtype());
-			System.out.println("Datenbank: " + this.getDatabase());
-			System.out.println("SQL-Abfrage: " + this.getSqlStatement());
-			System.out.println("Überschreibemodus aktiv: " + this.isOverwrite());
 		} catch (IOException ioe) {
 			System.out.println(ioe.getMessage());
 		} catch (ParserConfigurationException pce) {
