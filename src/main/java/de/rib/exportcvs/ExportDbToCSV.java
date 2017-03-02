@@ -48,6 +48,13 @@ public class ExportDbToCSV {
 		ConfigurationDBToCsv cDbToCvs = new ConfigurationDBToCsv();
 		if (args.length != 0) {
 			Path path = Paths.get(pathOfConfigFile);
+			System.out.println("********************************************");
+			System.out.println("****                      ******************");
+			System.out.println("****    Starte Export!    ******************");
+			System.out.println("****                      ******************");
+			System.out.println("********************************************");
+			System.out.println("********************************************");
+			
 			System.out.println(
 					"****    Es wurde eine Konfigurationsdatei unter folgenden Pfad angegeben: " + pathOfConfigFile);
 			configFileExists = Files.exists(path, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
@@ -198,6 +205,12 @@ public class ExportDbToCSV {
 				} else {
 					System.out.println("****    No after-export-update activities!");
 				}
+				System.out.println("********************************************");
+				System.out.println("****                      ******************");
+				System.out.println("****    Ende Export!      ******************");
+				System.out.println("****                      ******************");
+				System.out.println("********************************************");
+				System.out.println("********************************************");
 				con.close();
 			} else {
 				Collection<String> messages = errorMessages.values();
@@ -209,7 +222,7 @@ public class ExportDbToCSV {
 			}
 
 		} catch (SQLException e) {
-			System.out.println(e.getLocalizedMessage());
+			System.out.println("****    " + e.getMessage());
 
 		} catch (IOException i) {
 			i.printStackTrace();

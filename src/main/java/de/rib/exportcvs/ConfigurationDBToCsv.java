@@ -21,6 +21,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import de.rib.errorhandling.DbToCsvErrorConfigFileErrorHandler;
+
 /**
  * @author michael
  *
@@ -154,8 +156,10 @@ public class ConfigurationDBToCsv {
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 			
 			dbFactory.setSchema(schema);
-			dbFactory.setValidating(true);
+			dbFactory.setValidating(false);
+			
 			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
+			documentBuilder.setErrorHandler(new DbToCsvErrorConfigFileErrorHandler());
 			Document document = documentBuilder.parse(xmlFile);
 
 			this.setCsvfile(getValueOfXMLNode(document, "filename"));
@@ -172,11 +176,11 @@ public class ConfigurationDBToCsv {
 			this.setOverwrite(Boolean.parseBoolean(getValueOfXMLNode(document, "overwrite")));
 			this.setAfterExportUpdate(getValueOfXMLNode(document, "after-export-update"));
 		} catch (IOException ioe) {
-			System.out.println(ioe.getMessage());
+			System.out.println("****    " + ioe.getLocalizedMessage());
 		} catch (ParserConfigurationException pce) {
-			System.out.println(pce.getMessage());
+			System.out.println("****    " + pce.getLocalizedMessage());
 		} catch (SAXException se) {
-			System.out.println("Message: " + se.getMessage());
+			System.out.println("****    Message: " + se.getLocalizedMessage());
 
 		}
 
