@@ -28,16 +28,7 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				<!-- If this element exists the export application will check to the 
-					table which has been queried to a column named exported_date. If the column 
-					exists it will be updated with the actuell export date value. If the column 
-					not exists nothing will be happened. if the content of the element after-export-update 
-					is true, the appliction will try to update the rows on the table which has 
-					been selected from the table and have been exported as csv file. is it false, 
-					nothing happens. if this element not exists also nothing will be updateted 
-					This is old version of element after-export-update <xs:element name="after-export-update" 
-					type="xs:string" minOccurs="0" maxOccurs="1"/> -->
-
+				
 				<xs:element name="after-export-update" minOccurs="0"
 					maxOccurs="1">
 					<xs:simpleType>
