@@ -163,7 +163,7 @@ public class ExportDbToCSV {
 						}
 					}
 
-					String updateSQL = "update " + tableName + " set exported_date=now() where ";
+					String updateSQL = "update " + tableName + " set export_datum=now() where ";
 					ResultSet rsPrimaryKey = con.getMetaData().getPrimaryKeys(null, null, tableName);
 					String whereExpression = "";
 					ArrayList<String> updateSQLList = new ArrayList<String>();

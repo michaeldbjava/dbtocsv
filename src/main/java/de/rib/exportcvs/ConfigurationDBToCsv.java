@@ -198,9 +198,9 @@ public class ConfigurationDBToCsv {
 
 			} catch (SQLException ex) {
 				// handle any errors
-				System.out.println("SQLException: " + ex.getMessage());
-				System.out.println("SQLState: " + ex.getSQLState());
-				System.out.println("VendorError: " + ex.getErrorCode());
+				System.out.println("****    SQLException: " + ex.getMessage());
+				System.out.println("****    SQLState: " + ex.getSQLState());
+				System.out.println("****    VendorError: " + ex.getErrorCode());
 			}
 			return conToDb;
 		}
@@ -217,6 +217,36 @@ public class ConfigurationDBToCsv {
 				System.out.println("VendorError: " + ex.getErrorCode());
 			}
 			return conToDb;
+		}
+		
+		if(this.getDbtype().equals("postgresql")){
+			try {
+				conToDb = DriverManager.getConnection("jdbc:postgresql://" + this.getLocalhost() + ":" + this.getPort() +"/" + this.getDatabase(),this.getUser(),this.getPassword());
+
+			} catch (SQLException ex) {
+				// handle any errors
+				System.out.println("****    SQLException: " + ex.getMessage());
+				System.out.println("****    SQLState: " + ex.getSQLState());
+				System.out.println("****    VendorError: " + ex.getErrorCode());
+			}
+			return conToDb;
+
+		}
+		
+		
+		if(this.getDbtype().equals("mssqlserver")){
+			try {
+				conToDb = DriverManager.getConnection("jdbc:sqlserver://" + this.getLocalhost() + ":" + this.getPort() + ";databaseName=" 
+						+ this.getDatabase() + ";user=" + this.getUser() + ";password=" + this.getPassword() + ";");
+
+			} catch (SQLException ex) {
+				// handle any errors
+				System.out.println("****    SQLException: " + ex.getMessage());
+				System.out.println("****    SQLState: " + ex.getSQLState());
+				System.out.println("****    VendorError: " + ex.getErrorCode());
+			}
+			return conToDb;
+
 		}
 
 		return null;
