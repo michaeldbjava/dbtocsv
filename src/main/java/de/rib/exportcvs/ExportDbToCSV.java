@@ -162,8 +162,20 @@ public class ExportDbToCSV {
 							exportedDateColumnExists = true;
 						}
 					}
-
-					String updateSQL = "update " + tableName + " set export_datum=now() where ";
+					String updateSQL ="";
+					if(cDbToCvs.getDbtype()!=null && (cDbToCvs.getDbtype().toLowerCase().equals("mysql") || cDbToCvs.getDbtype().toLowerCase().equals("postgresql"))){
+						updateSQL = "update " + tableName + " set export_datum=now() where ";
+					}
+					else if (cDbToCvs.getDbtype()!=null && cDbToCvs.getDbtype().toLowerCase().equals("mssqlserver")){
+						updateSQL = "update " + tableName + " set export_datum=sysdatetime() where ";
+					}
+					else if (cDbToCvs.getDbtype()!=null && cDbToCvs.getDbtype().toLowerCase().equals("sqlite")){
+						updateSQL = "update " + tableName + " set export_datum=datetime('now') where ";
+					}
+					
+					/*
+					 * 
+					 */
 					ResultSet rsPrimaryKey = con.getMetaData().getPrimaryKeys(null, null, tableName);
 					String whereExpression = "";
 					ArrayList<String> updateSQLList = new ArrayList<String>();
