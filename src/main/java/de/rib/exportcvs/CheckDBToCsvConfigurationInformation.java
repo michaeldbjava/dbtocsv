@@ -1,5 +1,6 @@
 package de.rib.exportcvs;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -33,11 +34,27 @@ public class CheckDBToCsvConfigurationInformation {
 		String csvFileEncoding = cDbToCsv.getCsvfileEncoding();
 		String csvDelimeter = Character.toString(cDbToCsv.getDelimeter());
 
+		/* Prüfen, ob als Dateiname ein leere Zeichenkette übergeben wurde */
+		if(csvFileName!=null && csvFileName.trim().equals("")){
+			errorMessageList.put("noFileName", "Es wurde kein Dateiname für die zu speichernde Datei angegeben!");
+		}
+		
+		// Check diractory path exists
+		File file = new File(csvFileName);
+		
+		String pathOfDirectory = file.getAbsolutePath().substring(0, file.getAbsolutePath().lastIndexOf(File.separator));
+		Path pathOutputdirectory = Paths.get(pathOfDirectory);
+		
+		boolean outputfilePath = Files.exists(pathOutputdirectory, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
+		if(outputfilePath==false){
+			errorMessageList.put("pathNotExists","Das Verzeichnis indem die CSV Datei gespeichert werden soll existiert nicht!");
+		}
+		
 		// Check csv file name
 		if (!(csvFileName != null && !csvFileName.equals("") && csvFileName.endsWith(".csv")
 				&& csvFileName.length() > 5)) {
 			errorMessageList.put("csvFileName",
-					"****    Der angegebene Name für die CSV Datei ist ungültig. Der Name der CSV Datei muss mit .csv enden!");
+					"Der angegebene Name für die CSV Datei ist ungültig. Der Name der CSV Datei muss mit .csv enden!");
 		}
 
 		// Check existence of csv file and overwrite information
@@ -46,8 +63,12 @@ public class CheckDBToCsvConfigurationInformation {
 		boolean outputfileExists = Files.exists(pathOutputFile, new LinkOption[] { LinkOption.NOFOLLOW_LINKS });
 		if (outputfileExists && overwriteCsvFile == false) {
 			errorMessageList.put("csvFileExist",
-					"****    Die CSV Datei existiert bereits. Bitte konfigurieren Sie die Überschreibefunktion!");
+					"Die CSV Datei existiert bereits. Bitte konfigurieren Sie die Überschreibefunktion!");
 		}
+		
+		/*
+		 * Hier muss ich noch prüfen, ob der Pfad gültig ist!
+		 */
 
 		// Check charset
 		if (csvFileEncoding != null && csvFileEncoding.length() != 0) {
@@ -86,21 +107,43 @@ public class CheckDBToCsvConfigurationInformation {
 
 				} else {
 					errorMessageList.put("database",
-							"****    Es konnte keine Verbindung mit dem MySQL Datenbanksystem hergestellt werden!");
-					errorMessageList.put("database2", "****    Bitte überprüfen Sie die Verbindungsparameter!!");
+							"Es konnte keine Verbindung mit dem MySQL Datenbanksystem hergestellt werden!");
+					errorMessageList.put("database2", "Bitte überprüfen Sie die Verbindungsparameter!!");
 				}
 
 			} catch (SQLException ex) {
 				// handle any errors
-				errorMessageList.put("database_exc0", "****    Es ist ein Fehler aufgetreten!");
-				errorMessageList.put("database_exc1", "****    " + ex.getMessage());
-				errorMessageList.put("database_exc2", "****    " + ex.getSQLState());
-				errorMessageList.put("database_exc3", "****    " + ex.getErrorCode());
+				errorMessageList.put("database_exc0", "Es ist ein Fehler aufgetreten!");
+				errorMessageList.put("database_exc1", ex.getMessage());
+				errorMessageList.put("database_exc2", ex.getSQLState());
+//				errorMessageList.put("database_exc3", ex.getErrorCode());
 
 			}
 		}
 
 		if (dbType.equals("sqlite")) {
+
+			try {
+				Connection con = DriverManager.getConnection("jdbc:sqlite://" + database);
+				if (con.isValid(1000)) {
+					con.close();
+
+				} else {
+					errorMessageList.put("database",
+							"Es konnte keine Verbindung mit dem SQLite Datenbanksystem hergestellt werden!");
+					errorMessageList.put("database2", "Bitte überprüfen Sie die Verbindungsparameter!!");
+				}
+
+			} catch (SQLException ex) {
+				// handle any errors
+				errorMessageList.put("database_exc0", "Es ist ein Fehler aufgetreten!");
+				errorMessageList.put("database_exc1", ex.getMessage());
+				errorMessageList.put("database_exc2",  ex.getSQLState());
+//				errorMessageList.put("database_exc3", ex.getErrorCode());
+			}
+		}
+		/* Muss noch implementiert werden
+		if (dbType.equals("mysql")) {
 
 			try {
 				Connection con = DriverManager.getConnection("jdbc:sqlite://" + database);
@@ -121,6 +164,57 @@ public class CheckDBToCsvConfigurationInformation {
 				errorMessageList.put("database_exc3", "****    " + ex.getErrorCode());
 			}
 		}
+		*/
+
+		/* Muss noch implementiert werden
+		if (dbType.equals("postgresql")) {
+
+			try {
+				Connection con = DriverManager.getConnection("jdbc:sqlite://" + database);
+				if (con.isValid(1000)) {
+					con.close();
+
+				} else {
+					errorMessageList.put("database",
+							"****    Es konnte keine Verbindung mit dem SQLite Datenbanksystem hergestellt werden!");
+					errorMessageList.put("database2", "****    Bitte überprüfen Sie die Verbindungsparameter!!");
+				}
+
+			} catch (SQLException ex) {
+				// handle any errors
+				errorMessageList.put("database_exc0", "****    Es ist ein Fehler aufgetreten!");
+				errorMessageList.put("database_exc1", "****    " + ex.getMessage());
+				errorMessageList.put("database_exc2", "****    " + ex.getSQLState());
+				errorMessageList.put("database_exc3", "****    " + ex.getErrorCode());
+			}
+		}
+		*/
+		
+		/* Muss noch implementiert werden
+		if (dbType.equals("mssqlserver")) {
+
+			try {
+				Connection con = DriverManager.getConnection("jdbc:sqlite://" + database);
+				if (con.isValid(1000)) {
+					con.close();
+
+				} else {
+					errorMessageList.put("database",
+							"****    Es konnte keine Verbindung mit dem SQLite Datenbanksystem hergestellt werden!");
+					errorMessageList.put("database2", "****    Bitte überprüfen Sie die Verbindungsparameter!!");
+				}
+
+			} catch (SQLException ex) {
+				// handle any errors
+				errorMessageList.put("database_exc0", "****    Es ist ein Fehler aufgetreten!");
+				errorMessageList.put("database_exc1", "****    " + ex.getMessage());
+				errorMessageList.put("database_exc2", "****    " + ex.getSQLState());
+				errorMessageList.put("database_exc3", "****    " + ex.getErrorCode());
+			}
+		}
+		*/
+		
+
 
 		if (sqlStatement != null && !sqlStatement.equals("")) {
 			if (!(sqlStatement.toLowerCase().matches(".*delete.*") || sqlStatement.toLowerCase().matches(".*truncate.*")
@@ -129,13 +223,13 @@ public class CheckDBToCsvConfigurationInformation {
 
 			} else {
 				errorMessageList.put("forbiddenStatement",
-						"****    Delete, Truncate, Update und Insert Anweisungen sind nicht zulaessig!");
+						"Delete, Truncate, Update und Insert Anweisungen sind nicht zulaessig!");
 
 			}
 		}
 		else{
 				errorMessageList.put("noSqlStatement",
-					"****    Bitte geben Sie eine gültige SQL Anweisung in der Konfigurationsdatei an!");
+					"Bitte geben Sie eine gültige SQL Anweisung in der Konfigurationsdatei an!");
 		}
 		/* At fourth check after export activities */
 		String afterExportUpdate = cDbToCsv.getAfterExportUpdate();
