@@ -1,6 +1,8 @@
 package de.rib.exportcvs;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -96,6 +98,17 @@ public class CheckDBToCsvConfigurationInformation {
 		String user = cDbToCsv.getUser();
 		String password = cDbToCsv.getPassword();
 		String sqlStatement = cDbToCsv.getSqlStatement();
+		
+		try{
+		if(!InetAddress.getByName(host).isReachable(1000)){
+			errorMessageList.put("database",
+					"Der von Ihnen angegebene HOST (Server) " + host + " ist nicht erreichbar!");
+		}
+		}
+		catch(IOException ioe){
+			errorMessageList.put("database",
+					"Der von Ihnen angegebene HOST (Server) " + host + "ist nicht erreichbar!");
+		}
 
 		if (dbType.equals("mysql")) {
 

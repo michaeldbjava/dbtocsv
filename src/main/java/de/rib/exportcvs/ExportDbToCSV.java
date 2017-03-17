@@ -138,7 +138,7 @@ public class ExportDbToCSV {
 				out.flush();
 				out.close();
 				System.out.println(
-						"****    " + ++counterMessages + ")  Die CSV Datei  \n****       " + cDbToCvs.getCsvfile() + "\n****       wurde erfolgreich gespeichert.");
+						"****    " + ++counterMessages + ")  Die CSV Datei  \n****        " + cDbToCvs.getCsvfile() + "\n****        wurde erfolgreich gespeichert.");
 				System.out.println("****    ");
 
 				/*
