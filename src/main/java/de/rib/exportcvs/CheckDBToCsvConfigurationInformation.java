@@ -152,10 +152,9 @@ public class CheckDBToCsvConfigurationInformation {
 				errorMessageList.put("database_exc0", "Es ist ein Fehler aufgetreten!");
 				errorMessageList.put("database_exc1", ex.getMessage());
 				errorMessageList.put("database_exc2",  ex.getSQLState());
-//				errorMessageList.put("database_exc3", ex.getErrorCode());
 			}
 		}
-		/* Muss noch implementiert werden
+		
 		if (dbType.equals("mysql")) {
 
 			try {
@@ -170,14 +169,12 @@ public class CheckDBToCsvConfigurationInformation {
 				}
 
 			} catch (SQLException ex) {
-				// handle any errors
 				errorMessageList.put("database_exc0", "****    Es ist ein Fehler aufgetreten!");
 				errorMessageList.put("database_exc1", "****    " + ex.getMessage());
 				errorMessageList.put("database_exc2", "****    " + ex.getSQLState());
 				errorMessageList.put("database_exc3", "****    " + ex.getErrorCode());
 			}
 		}
-		*/
 
 		/* Muss noch implementiert werden
 		if (dbType.equals("postgresql")) {
