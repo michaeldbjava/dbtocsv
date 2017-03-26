@@ -29,9 +29,10 @@
 						</xs:sequence>
 					</xs:complexType>
 				</xs:element>
-				
+
 				<xs:element name="after-export-update" minOccurs="0"
 					maxOccurs="1">
+
 					<xs:simpleType>
 						<xs:restriction base="xs:string">
 							<xs:enumeration value="true" />
@@ -39,6 +40,27 @@
 						</xs:restriction>
 					</xs:simpleType>
 				</xs:element>
+
+				<!-- This part must be implemented. It will replace element after-export-update above.
+				<xs:element name="after-export-update" minOccurs="0"
+					maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="after-export-update-on" minOccurs="1" maxOccurs="1">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:enumeration value="true" />
+										<xs:enumeration value="false" />
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							
+							<xs:element name="date-column-to-update" type="xs:date" minOccurs="1" maxOccurs="1"/>
+						</xs:sequence>
+
+					</xs:complexType>
+				</xs:element>
+				 -->
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
