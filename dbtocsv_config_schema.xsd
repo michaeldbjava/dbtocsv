@@ -8,7 +8,8 @@
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="dbtype" type="xs:string" />
-							<!-- Valid db types are: mysql, postgresql, mssqlserver, sqlite -->
+							<!-- Valid db types are: mysql, postgresql, mssqlserver, sqlite 
+							it should be simple type, restriction and enumeration-->
 							<xs:element name="database_name" type="xs:string" />
 							<xs:element name="host" type="xs:string" />
 							<xs:element name="port" type="xs:string" />
