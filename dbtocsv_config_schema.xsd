@@ -42,8 +42,8 @@
 					</xs:simpleType>
 				</xs:element>
 
-				<!-- This part must be implemented. It will replace element after-export-update above.
-				<xs:element name="after-export-update" minOccurs="0"
+				<!-- This part must be implemented. It will replace element after-export-update above.-->
+				<xs:element name="after-export-update2" minOccurs="0"
 					maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
@@ -61,7 +61,7 @@
 
 					</xs:complexType>
 				</xs:element>
-				 -->
+				 
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
