@@ -99,6 +99,7 @@ public class CheckDBToCsvConfigurationInformation {
 		String password = cDbToCsv.getPassword();
 		String sqlStatement = cDbToCsv.getSqlStatement();
 		
+		if(!(dbType!=null && dbType.toLowerCase().equals("sqlite"))){
 		try{
 		if(!InetAddress.getByName(host).isReachable(1000)){
 			errorMessageList.put("database",
@@ -108,6 +109,7 @@ public class CheckDBToCsvConfigurationInformation {
 		catch(IOException ioe){
 			errorMessageList.put("database",
 					"Der von Ihnen angegebene HOST (Server) " + host + "ist nicht erreichbar!");
+		}
 		}
 
 		if (dbType.equals("mysql")) {
