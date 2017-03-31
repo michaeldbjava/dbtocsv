@@ -38,9 +38,10 @@ public class ConfigurationDBToCsv {
 	private String password;
 	private String sqlStatement;
 	private char delimeter;
-	private boolean overwrite=false;
+	private boolean overwrite = false;
 	private Connection conToDb = null;
 	private String afterExportUpdate;
+	private String afterExportUpdateColumn;
 
 	/**
 	 * 
@@ -145,19 +146,28 @@ public class ConfigurationDBToCsv {
 		this.afterExportUpdate = afterExportUpdate;
 	}
 
+	
+	public String getAfterExportUpdateColumn() {
+		return afterExportUpdateColumn;
+	}
+
+	public void setAfterExportUpdateColumn(String afterExportUpdateColumn) {
+		this.afterExportUpdateColumn = afterExportUpdateColumn;
+	}
+
 	public boolean readConfigFile(String pathXMLConfigFile) {
 		try {
 			File xmlFile = new File(pathXMLConfigFile);
 			File xsdFile = new File("dbtocsv_config_schema.xsd");
-
+			System.out.println("Schema Beschreibung für die Struktur der XML Konfigurationsdatei existiert" + xsdFile.exists());
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			Schema schema = schemaFactory.newSchema(xsdFile);
 
 			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			
+
 			dbFactory.setSchema(schema);
 			dbFactory.setValidating(false);
-			
+
 			DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
 			documentBuilder.setErrorHandler(new DbToCsvErrorConfigFileErrorHandler());
 			Document document = documentBuilder.parse(xmlFile);
@@ -174,7 +184,20 @@ public class ConfigurationDBToCsv {
 			this.setSqlStatement(getValueOfXMLNode(document, "sql-query"));
 
 			this.setOverwrite(Boolean.parseBoolean(getValueOfXMLNode(document, "overwrite")));
-			this.setAfterExportUpdate(getValueOfXMLNode(document, "after-export-update"));
+
+			NodeList nodeOfTag = document.getElementsByTagName("after-export-update2");
+			if (nodeOfTag != null && nodeOfTag.getLength() != 0) {
+				
+//				System.out.println("Laenge der NodeList: " + nodeOfTag.getLength());
+				Element elementValue1 = (Element)nodeOfTag.item(0);
+				NodeList elementValueFlag = elementValue1.getElementsByTagName("after-export-update-on");
+				System.out.println(elementValueFlag.item(0).getTextContent());
+				NodeList elementValueColumn = elementValue1.getElementsByTagName("date-column-to-update");
+				System.out.println(elementValueColumn.item(0).getTextContent());
+				this.setAfterExportUpdate(elementValueFlag.item(0).getTextContent());
+				this.setAfterExportUpdateColumn(elementValueColumn.item(0).getTextContent());
+			}
+
 		} catch (IOException ioe) {
 			System.out.println("****    " + ioe.getLocalizedMessage());
 		} catch (ParserConfigurationException pce) {
@@ -218,10 +241,12 @@ public class ConfigurationDBToCsv {
 			}
 			return conToDb;
 		}
-		
-		if(this.getDbtype().equals("postgresql")){
+
+		if (this.getDbtype().equals("postgresql")) {
 			try {
-				conToDb = DriverManager.getConnection("jdbc:postgresql://" + this.getLocalhost() + ":" + this.getPort() +"/" + this.getDatabase(),this.getUser(),this.getPassword());
+				conToDb = DriverManager.getConnection(
+						"jdbc:postgresql://" + this.getLocalhost() + ":" + this.getPort() + "/" + this.getDatabase(),
+						this.getUser(), this.getPassword());
 
 			} catch (SQLException ex) {
 				// handle any errors
@@ -232,12 +257,12 @@ public class ConfigurationDBToCsv {
 			return conToDb;
 
 		}
-		
-		
-		if(this.getDbtype().equals("mssqlserver")){
+
+		if (this.getDbtype().equals("mssqlserver")) {
 			try {
-				conToDb = DriverManager.getConnection("jdbc:sqlserver://" + this.getLocalhost() + ":" + this.getPort() + ";databaseName=" 
-						+ this.getDatabase() + ";user=" + this.getUser() + ";password=" + this.getPassword() + ";");
+				conToDb = DriverManager.getConnection("jdbc:sqlserver://" + this.getLocalhost() + ":" + this.getPort()
+						+ ";databaseName=" + this.getDatabase() + ";user=" + this.getUser() + ";password="
+						+ this.getPassword() + ";");
 
 			} catch (SQLException ex) {
 				// handle any errors
@@ -257,7 +282,7 @@ public class ConfigurationDBToCsv {
 		try {
 			if (conToDb != null && conToDb.isValid(1000))
 				return true;
-			else{
+			else {
 				return false;
 			}
 		} catch (SQLException e) {

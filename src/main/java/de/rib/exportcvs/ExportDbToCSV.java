@@ -164,14 +164,15 @@ public class ExportDbToCSV {
 						}
 					}
 					String updateSQL ="";
+					String updateColumnName=cDbToCvs.getAfterExportUpdateColumn();
 					if(cDbToCvs.getDbtype()!=null && (cDbToCvs.getDbtype().toLowerCase().equals("mysql") || cDbToCvs.getDbtype().toLowerCase().equals("postgresql"))){
-						updateSQL = "update " + tableName + " set export_datum=now() where ";
+						updateSQL = "update " + tableName + " set " + updateColumnName + "=now() where ";
 					}
 					else if (cDbToCvs.getDbtype()!=null && cDbToCvs.getDbtype().toLowerCase().equals("mssqlserver")){
-						updateSQL = "update " + tableName + " set export_datum=sysdatetime() where ";
+						updateSQL = "update " + tableName + " set " + updateColumnName + "=sysdatetime() where ";
 					}
 					else if (cDbToCvs.getDbtype()!=null && cDbToCvs.getDbtype().toLowerCase().equals("sqlite")){
-						updateSQL = "update " + tableName + " set export_datum=datetime('now') where ";
+						updateSQL = "update " + tableName + " set " + updateColumnName + "=datetime('now') where ";
 					}
 					
 					/*

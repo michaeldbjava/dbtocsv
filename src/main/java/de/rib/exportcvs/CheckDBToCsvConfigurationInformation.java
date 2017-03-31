@@ -157,27 +157,7 @@ public class CheckDBToCsvConfigurationInformation {
 			}
 		}
 		
-		if (dbType.equals("mysql")) {
-
-			try {
-				Connection con = DriverManager.getConnection("jdbc:sqlite://" + database);
-				if (con.isValid(1000)) {
-					con.close();
-
-				} else {
-					errorMessageList.put("database",
-							"****    Es konnte keine Verbindung mit dem SQLite Datenbanksystem hergestellt werden!");
-					errorMessageList.put("database2", "****    Bitte überprüfen Sie die Verbindungsparameter!!");
-				}
-
-			} catch (SQLException ex) {
-				errorMessageList.put("database_exc0", "****    Es ist ein Fehler aufgetreten!");
-				errorMessageList.put("database_exc1", "****    " + ex.getMessage());
-				errorMessageList.put("database_exc2", "****    " + ex.getSQLState());
-				errorMessageList.put("database_exc3", "****    " + ex.getErrorCode());
-			}
-		}
-
+		
 		/* Muss noch implementiert werden
 		if (dbType.equals("postgresql")) {
 

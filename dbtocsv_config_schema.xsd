@@ -56,7 +56,7 @@
 								</xs:simpleType>
 							</xs:element>
 							
-							<xs:element name="date-column-to-update" type="xs:date" minOccurs="1" maxOccurs="1"/>
+							<xs:element name="date-column-to-update" type="xs:string" minOccurs="1" maxOccurs="1"/>
 						</xs:sequence>
 
 					</xs:complexType>
