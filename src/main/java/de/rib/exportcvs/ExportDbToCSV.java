@@ -158,6 +158,7 @@ public class ExportDbToCSV {
 					boolean exportedDateColumnExists = false;
 					for (int i = 1; i < colCount + 1; i++) {
 						String columnName = rsmd.getColumnName(i);
+						
 //						System.out.println(columnName);
 						if (columnName != null && columnName.equals("exported_date")) {
 							exportedDateColumnExists = true;
