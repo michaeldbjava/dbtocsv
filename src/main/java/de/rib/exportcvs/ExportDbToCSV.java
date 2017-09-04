@@ -2,7 +2,6 @@ package de.rib.exportcvs;
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -24,7 +23,7 @@ import java.util.Map;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import com.mysql.jdbc.ResultSetMetaData;
+
 
 public class ExportDbToCSV {
 
@@ -39,7 +38,7 @@ public class ExportDbToCSV {
 		if (args.length == 1) {
 			pathOfConfigFile = args[0];
 		}
-
+		
 		boolean configFileExists = false;
 
 		/*
@@ -101,7 +100,7 @@ public class ExportDbToCSV {
 				System.out.println("****    " + ++counterMessages + ")  Der Inhalt der Konfigurationsdatei wurde erfolgreich überprüft.    ****");
 				System.out.println("****    ");
 
-				Connection con = cDbToCvs.getConnectionToDb();
+				Connection con = ConnectionFactory.createConnectionToDb(cDbToCvs.getDbtype(), cDbToCvs.getLocalhost(), cDbToCvs.getPort(), cDbToCvs.getDatabase(), cDbToCvs.getUser(), cDbToCvs.getPassword());
 				System.out.println("****    " + ++counterMessages + ")  Die Verbindung zur Datenbank " + cDbToCvs.getDatabase() + "\n****       unter einem " + cDbToCvs.getDbtype() + "Datenbanksystem wurde hergestellt.");
 				System.out.println("****    ");
 				// Als erstes prüfen, ob bereits eine Ausgabedatei unter dem

@@ -1,27 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dbtocsv>
 	
-	<database>
-		<!-- dbtypes: mysql, (future release ... mssql, postgrsql ) datbase: select 
-			database of database server port: port number of database server user: user 
-			of database password: password for user of database -->
+	
+	
+		<database>
+		
 		<dbtype>mysql</dbtype>
 		<database_name>uebungsdatenbank</database_name>
 		<host>localhost</host>
-		<port>3306</port>
-		<user>root</user>
-
+		<port>5432</port>
+		<user>root</user> 
 		<password>montag</password>
+		
+		
+		
+		
+		
 	</database>
-	<!-- Tabel to map -->
-	<sql-query>select * from mitarbeiter</sql-query>
+	
+	<sql-query>
+		
+		select * from mitarbeiter
+
+	
+	
+
+
+ 
+	</sql-query>
 	
 	<csv-file-to-export>
-		<filename>mitarbeiter.csv</filename>
-		<file_encoding>cp1252</file_encoding>
-		<delimeter>;</delimeter>	
+		<filename>C:\deploy\executeable\dbtocsv_test\mitarbeiter.csv</filename>
+		<file_encoding>UTF-8</file_encoding>
+		<delimeter>;</delimeter>
 		<overwrite>true</overwrite>
 	
 	</csv-file-to-export>
+		
 	
+		
+
 </dbtocsv>
